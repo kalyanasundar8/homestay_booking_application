@@ -8,8 +8,6 @@ dotenv.config();
 const userRoutes = require("./Routes/UserRoutes.js");
 const homestayRouter = require("./Routes/HomestayRoute.js");
 const bookingRouter = require("./Routes/BookingRoutes.js");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const connectToDb = require("./utils/ConnectToDb.js");
 
 //? Db connection

@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Homestay = require("../Models/HomestayModel.js");
 const Booking = require("../Models/BookingModel.js");
 
-//! [ Create homestays, GET/api/homestay/homestays_avail ]
+//! [ Create homestays, GET/api/homestay/create_homestays ]
 const createHomestays = asyncHandler(async (req, res) => {
   //? Destructure a homestays model
   const { name, location, description, price } = req.body;
