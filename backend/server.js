@@ -3,6 +3,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const colors = require("colors");
 dotenv.config();
+const cors = require("cors");
 
 //? Routes
 const userRoutes = require("./Routes/UserRoutes.js");
@@ -17,6 +18,8 @@ connectToDb();
 const port = process.env.PORT;
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
