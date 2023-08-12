@@ -11,7 +11,9 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     const logout = () => {
+        localStorage.removeItem('token')
         setUser(null);
+        console.log(localStorage.getItem('token'))
     }
 
     return (
