@@ -8,6 +8,7 @@ import Booking from "./components/Booking";
 import HomeStays from "./components/HomeStays";
 import Navbar from "./components/Navbar";
 import WelcomePage from "./components/WelcomePage";
+import HomestaysDetails from "./components/HomestaysDetails";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/homestays/:homestayId" element={<HomestaysDetails />} />
           </Routes>
         </div>
       </Router>

@@ -36,6 +36,23 @@ const createHomestays = asyncHandler(async (req, res) => {
   }
 });
 
+//! [ Get homestays, GET/api/homestay/:id ]
+const getHomestayById = asyncHandler(async (req, res) => {
+  const homestayId = req.params.id;
+
+  // Fetch the homestay by ID
+  try {
+    const homestay = await Homestay.findById(homestayId);
+    if (homestay) {
+      res.json(homestay);
+    } else {
+      res.status(404).json({ error: "Homestay not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Error fetching homestay details" });
+  }
+});
+
 //! [ Get homestays, GET/api/homestay/homestays_avail ]
 const getHomeStay = asyncHandler(async (req, res) => {
   //? Destructure a check_in_date and check_out_date from booking
@@ -64,4 +81,4 @@ async function getBookedHomestaysIds(check_in_date, check_out_date) {
   return bookedIds;
 }
 
-module.exports = { getHomeStay, createHomestays };
+module.exports = { getHomeStay, createHomestays, getHomestayById };
