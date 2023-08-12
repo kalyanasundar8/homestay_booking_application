@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -15,9 +16,9 @@ const Navbar = () => {
             {/* Links */}
             <ul className="flex space-x-4">
                 {user && (
-                    <button onClick={logout} className="text-white ml-auto">
+                    <Link to="/" onClick={logout} className="text-white ml-auto">
                         logout
-                    </button>
+                    </Link>
                 )}
             </ul>
         </nav>
