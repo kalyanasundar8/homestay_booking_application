@@ -5,11 +5,11 @@ import asyncHandler from "express-async-handler";
 
 //? [ Create user, Route => POST/api/users/register_user ]
 const registerUser = asyncHandler(async (req, res) => {
-  //? Destructure a user from the model
-  const { name, email, password } = req.body;
+  //? Destructure a user
+  const { name, email } = req.body;
 
   //? Check all fields are filled
-  if (!name || !email || !password) {
+  if (!name || !email) {
     res.status(400);
     throw new Error("Please fill all fields");
   }
@@ -18,15 +18,11 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists === null) {
-    //? Hash the password using bcrypt
-    const salt = await bcrypt.genSalt(10);
-    const hasedPassword = await bcrypt.hash(password, salt);
-
     //? Create a user account
     const user = await User.create({
       name,
       email,
-      password: hasedPassword,
+      verified: false,
     });
 
     //? Check the user
@@ -47,25 +43,74 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+//? [ setpassword user, Route => POST/api/users/set_password ]
+const setPassword = asyncHandler(async (req, res) => {
+  const { password, confirmPassword, token } = req.body;
+
+  if (!password || !confirmPassword) {
+    res.status(400);
+    throw new Error("Please fill all fields");
+  }
+
+  const decoded = jwt.verify(token, process.env.SECRET_KEY);
+  const userId = decoded.id;
+
+  const userExists = await User.findOne({ _id: userId });
+
+  if (userExists === null) {
+    res
+      .status(400)
+      .json({ mssg: "We can't find the user, Please create an account" });
+  } else {
+    //? Hash the password using bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hasedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.findOneAndUpdate(
+      { _id: userExists.id },
+      { $set: { verified: true, password: hasedPassword } },
+      { new: true }
+    );
+    if (user) {
+      res.status(200).json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      });
+    } else {
+      res.status(400).json({ mssg: "Invalid credentials" });
+    }
+  }
+});
+
 //? [ Login user, Route => POST/api/users/login_user ]
 const loginUser = asyncHandler(async (req, res) => {
   //? Destructure users email and password from the model
   const { email, password } = req.body;
 
   //? find the user email
-  const user = await User.findOne({ email });
+  const userExists = await User.findOne({ email });
 
-  //? hash the password and allow to login
-  if (user && (await bcrypt.compare(password, user.password))) {
-    res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
-    });
+  if (userExists.verified === true) {
+    //? hash the password and allow to login
+    if (userExists && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: userExists.id,
+        name: userExists.name,
+        email: userExists.email,
+        token: generateToken(userExists._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user credentials");
+    }
   } else {
-    res.status(400);
-    throw new Error("Invalid user credentials");
+    res.status(400).json({
+      id: userExists._id,
+      name: userExists.name,
+      email: userExists.email,
+      token: generateToken(userExists._id)
+    })
   }
 });
 
@@ -81,4 +126,4 @@ const generateToken = (id) => {
   });
 };
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, setPassword, loginUser, logoutUser };
