@@ -1,14 +1,14 @@
-const express = require("express");
-const {
+import express from "express";
+import  {
   getHomeStay,
   createHomestays,
   getHomestayById,
-} = require("../controller/HomestayController.js");
+} from "../controller/HomestayController.js";
 
-const router = express.Router();
+const homeStayRouter = express.Router();
 
-router.post("/create_homestays", createHomestays);
-router.get("/homestays_avail", getHomeStay);
-router.get("/:id", getHomestayById);
+homeStayRouter.post("/create_homestays", createHomestays);
+homeStayRouter.get("/homestays_avail", getHomeStay);
+homeStayRouter.get("/:id", getHomestayById);
 
-module.exports = router;
+export default homeStayRouter;

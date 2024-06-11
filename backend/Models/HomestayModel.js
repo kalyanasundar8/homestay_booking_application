@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const homestaySchema = mongoose.Schema(
   {
@@ -23,4 +23,5 @@ const homestaySchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("homestay", homestaySchema);
+const HomeStay = mongoose.model("homestay", homestaySchema);
+export default HomeStay;

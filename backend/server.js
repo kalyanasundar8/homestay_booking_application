@@ -1,15 +1,16 @@
 //? NPM packages
-const express = require("express");
-const dotenv = require("dotenv");
-const colors = require("colors");
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-const cors = require("cors");
+import colors from "colors";
+import cors from "cors";
+import parser from "body-parser";
 
 //? Routes
-const userRoutes = require("./Routes/UserRoutes.js");
-const homestayRouter = require("./Routes/HomestayRoute.js");
-const bookingRouter = require("./Routes/BookingRoutes.js");
-const connectToDb = require("./utils/ConnectToDb.js");
+import userRoutes from "./Routes/UserRoutes.js";
+import homestayRouter from "./Routes/HomestayRoute.js";
+import bookingRouter from "./Routes/BookingRoutes.js";
+import connectToDb from "./utils/ConnectToDb.js";
 
 //? Db connection
 connectToDb();
@@ -21,8 +22,8 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(parser.json());
+app.use(parser.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/homestay", homestayRouter);

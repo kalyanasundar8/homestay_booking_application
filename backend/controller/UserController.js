@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const User = require("../Models/UserModel.js");
-const asyncHandler = require("express-async-handler");
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import User from "../Models/UserModel.js";
+import asyncHandler from "express-async-handler";
 
 //? [ Create user, Route => POST/api/users/register_user ]
 const registerUser = asyncHandler(async (req, res) => {
@@ -17,33 +17,33 @@ const registerUser = asyncHandler(async (req, res) => {
   //? Check the user email it is already exists
   const userExists = await User.findOne({ email });
 
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
-  }
+  if (userExists === null) {
+    //? Hash the password using bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hasedPassword = await bcrypt.hash(password, salt);
 
-  //? Hash the password using bcrypt
-  const salt = await bcrypt.genSalt(10);
-  const hasedPassword = await bcrypt.hash(password, salt);
-
-  //? Create a user account
-  const user = await User.create({
-    name,
-    email,
-    password: hasedPassword,
-  });
-
-  //? Check the user
-  if (user) {
-    res.status(201).json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
+    //? Create a user account
+    const user = await User.create({
+      name,
+      email,
+      password: hasedPassword,
     });
+
+    //? Check the user
+    if (user) {
+      res.status(201).json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user credentials");
+    }
   } else {
     res.status(400);
-    throw new Error("Invalid user credentials");
+    throw new Error("User already exists");
   }
 });
 
@@ -76,13 +76,9 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 //! Generate authentication token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, process.env.SECRET_KEY, {
     expiresIn: "30d",
   });
 };
 
-module.exports = {
-  registerUser,
-  loginUser,
-  logoutUser,
-};
+export { registerUser, loginUser, logoutUser };

@@ -1,6 +1,6 @@
-const asyncHandler = require("express-async-handler");
-const Homestay = require("../Models/HomestayModel.js");
-const Booking = require("../Models/BookingModel.js");
+import asyncHandler from "express-async-handler";
+import Homestay from "../Models/HomestayModel.js";
+import Booking from "../Models/BookingModel.js";
 
 //! [ Create booking, Route => POST/api/booking/booking-home ]
 const createHomeBooking = asyncHandler(async (req, res) => {
@@ -44,4 +44,4 @@ const createHomeBooking = asyncHandler(async (req, res) => {
   // });
 });
 
-module.exports = createHomeBooking;
+export { createHomeBooking };

@@ -1,8 +1,8 @@
-const express = require("express");
-const createHomeBooking = require("../controller/BookingHomeController");
+import express from "express";
+import { createHomeBooking } from "../controller/BookingHomeController.js";
 
-const router = express.Router();
+const bookingRouter = express.Router();
 
-router.post("/booking-home", createHomeBooking);
+bookingRouter.post("/booking-home", createHomeBooking);
 
-module.exports = router;
+export default bookingRouter;
