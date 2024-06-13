@@ -1,10 +1,12 @@
 import asyncHandler from "express-async-handler";
 import Homestay from "../Models/HomestayModel.js";
 import Booking from "../Models/BookingModel.js";
+import Admin from "../Models/AdminModel.js";
 
 //! [ Create homestays, GET/api/homestay/create_homestays ]
 const createHomestays = asyncHandler(async (req, res) => {
   //? Destructure a homestays model
+  const adminId = req.query.id;
   const { name, location, description, price } = req.body;
 
   //? Check all fields
@@ -15,6 +17,7 @@ const createHomestays = asyncHandler(async (req, res) => {
 
   //? Create a homestays
   const homestays = await Homestay.create({
+    adminId,
     name,
     location,
     description,
@@ -23,8 +26,10 @@ const createHomestays = asyncHandler(async (req, res) => {
 
   //? check the homestay details
   if (homestays) {
+    await Admin.findByIdAndUpdate(adminId, { $push: { rooms: homestays._id }});
     res.status(200).json({
-      _id: homestays.id,
+      id: homestays.id,
+      adminId: homestays.adminId,
       name: homestays.name,
       location: homestays.location,
       description: homestays.description,
@@ -36,9 +41,9 @@ const createHomestays = asyncHandler(async (req, res) => {
   }
 });
 
-//! [ Get homestays, GET/api/homestay/:id ]
+//! [ Get homestays, GET/api/homestay ]
 const getHomestayById = asyncHandler(async (req, res) => {
-  const homestayId = req.params.id;
+  const homestayId = req.query.id;
 
   // Fetch the homestay by ID
   try {
@@ -46,7 +51,7 @@ const getHomestayById = asyncHandler(async (req, res) => {
     if (homestay) {
       res.json(homestay);
     } else {
-      res.status(404).json({ error: "Homestay not found" });
+      res.status(400).json({ error: "Homestay not found" });
     }
   } catch (error) {
     res.status(400).json({ error: "Error fetching homestay details" });

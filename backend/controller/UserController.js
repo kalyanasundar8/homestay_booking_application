@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { generateToken } from "../services/GenerateToken.js";
 import bcrypt from "bcryptjs";
 import User from "../Models/UserModel.js";
 import asyncHandler from "express-async-handler";
@@ -93,7 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (userExists.verified === true) {
     //? hash the password and allow to login
-    if (userExists && (await bcrypt.compare(password, user.password))) {
+    if (userExists && (await bcrypt.compare(password, userExists.password))) {
       res.json({
         _id: userExists.id,
         name: userExists.name,
@@ -118,12 +118,5 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Logout a user" });
 });
-
-//! Generate authentication token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET_KEY, {
-    expiresIn: "30d",
-  });
-};
 
 export { registerUser, setPassword, loginUser, logoutUser };

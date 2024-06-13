@@ -2,13 +2,17 @@ import mongoose from "mongoose";
 
 const homestaySchema = mongoose.Schema(
   {
+    adminId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin"
+    },
     name: {
       type: String,
-      required: ["true", "Please enter a name"],
+      required: "true",
     },
     location: {
       type: String,
-      required: ["true", "Please enter a location"],
+      required: "true",
     },
     description: {
       type: String,
