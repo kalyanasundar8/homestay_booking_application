@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
     password: {
       type: String,
     },

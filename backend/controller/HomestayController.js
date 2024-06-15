@@ -75,7 +75,7 @@ const getHomeStay = asyncHandler(async (req, res) => {
   }
 });
 
-//? Find a Booked homestays Id for given date
+//? Find a Booked homestays Id for given 
 async function getBookedHomestaysIds(check_in_date, check_out_date) {
   const bookedIds = await Booking.distinct("homestayId", {
     $or: [

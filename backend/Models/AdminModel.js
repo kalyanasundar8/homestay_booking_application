@@ -17,7 +17,8 @@ const adminSchema = mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "homestay" }],
+    rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "HomeStay" }],
+    bookingList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking"}]
   },
   { timestamps: true }
 );
